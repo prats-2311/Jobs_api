@@ -6,12 +6,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     msg: err.message || "Something went wrong try again later",
   };
-  // if (err instanceof CustomAPIError) {
-  //   return res.status(err.statusCode).json({ msg: err.message });
-  // }
   if (err.name === "ValidationError") {
-    // const arr = Object.values(err.errors);
-    // console.log(typeof arr);
     customError.msg = Object.values(err.errors)
       .map((item) => item.message)
       .join(",");
@@ -28,7 +23,6 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     )} field, please choose another value`),
       (customError.statusCode = 400);
   }
-  // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err });
   return res.status(customError.statusCode).json({ msg: customError.msg });
 };
 
